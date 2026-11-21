@@ -185,7 +185,7 @@ class _MoveSheetState extends ConsumerState<_MoveSheet> {
   }
 
   Future<void> _save() async {
-    final n = NumberFormat.decimalPattern(moneyLocale).tryParse(_amount.text.trim());
+    final n = parseAmount(_amount.text.trim());
     if (n == null || n <= 0) return;
     final cents = (n * 100).round();
     final note = _note.text.trim();
@@ -282,7 +282,7 @@ class _PotSheetState extends ConsumerState<PotSheet> {
 
   Future<void> _save() async {
     final text = _target.text.trim();
-    final target = text.isEmpty ? null : NumberFormat.decimalPattern(moneyLocale).tryParse(text);
+    final target = text.isEmpty ? null : parseAmount(text);
     if (_name.text.trim().isEmpty || _accountId == null || (text.isNotEmpty && target == null)) return;
     final p = widget.pot;
     await ref

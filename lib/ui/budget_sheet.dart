@@ -42,7 +42,7 @@ class _BudgetSheetState extends ConsumerState<BudgetSheet> {
   }
 
   Future<void> _save() async {
-    final n = NumberFormat.decimalPattern(moneyLocale).tryParse(_amount.text.trim());
+    final n = parseAmount(_amount.text.trim());
     if (_categoryId == null || n == null || n <= 0) return;
     await ref
         .read(repoProvider)

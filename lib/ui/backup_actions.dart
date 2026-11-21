@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../data/backup.dart';
 import '../state.dart';
 import '../theme/theme.dart';
+import 'widgets.dart';
 import 'solar.dart';
 
 void _say(BuildContext context, String text) => ScaffoldMessenger.of(
@@ -118,24 +119,10 @@ Future<void> _restore(BuildContext context, WidgetRef ref, File file) async {
   final when = backup.exportedAt == null
       ? ''
       : '${DateFormat.yMMMEd(context.locale.languageCode).add_Hm().format(backup.exportedAt!)}\n';
-  final ok = await showDialog<bool>(
-    context: context,
-    builder: (c) => AlertDialog(
-      title: Text('settings.replace_title'.tr()),
-      content: Text(
-        '$when${'settings.replace_body'.tr(namedArgs: {'accounts': '${backup.count('accounts')}', 'categories': '${backup.count('categories')}', 'transactions': '${backup.count('transactions')}'})}'
-        '\n\n${'backup.safety'.tr()}',
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(c, false), child: Text('add.cancel'.tr())),
-        TextButton(
-          onPressed: () => Navigator.pop(c, true),
-          child: Text('settings.replace'.tr(), style: TextStyle(color: c.tokens.expense)),
-        ),
-      ],
-    ),
-  );
-  if (ok != true) return;
+  final body =
+      '$when${'settings.replace_body'.tr(namedArgs: {'accounts': '${backup.count('accounts')}', 'categories': '${backup.count('categories')}', 'transactions': '${backup.count('transactions')}'})}'
+      '\n\n${'backup.safety'.tr()}';
+  if (!await confirm(context, 'settings.replace_title'.tr(), body, action: 'settings.replace'.tr())) return;
   final db = ref.read(repoProvider).db;
   try {
     // Keep today's state as an automatic backup, so a wrong restore can be undone.

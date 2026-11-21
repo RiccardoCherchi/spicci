@@ -173,20 +173,7 @@ class _AddPageState extends ConsumerState<AddPage> {
   }
 
   Future<void> _delete() async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text('add.delete_title'.tr()),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: Text('add.cancel'.tr())),
-          TextButton(
-            onPressed: () => Navigator.pop(c, true),
-            child: Text('add.delete'.tr(), style: TextStyle(color: c.tokens.expense)),
-          ),
-        ],
-      ),
-    );
-    if (ok != true) return;
+    if (!await confirm(context, 'add.delete_title'.tr(), '')) return;
     await ref.read(repoProvider).deleteTxn(widget.editing!.id!);
     ref.read(dataVersionProvider.notifier).bump();
     if (mounted) Navigator.pop(context);
@@ -289,7 +276,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                   children: [
                     GestureDetector(
                       onTap: _noteFocus.unfocus,
-                      child: _AmountDisplay(text: _display, empty: _input.isEmpty),
+                      child: _AmountDisplay(text: _display, empty: _input.isEmpty, active: keypad),
                     ),
                     const SizedBox(height: 10),
                     _NoteField(controller: _note, focusNode: _noteFocus),
@@ -437,9 +424,12 @@ class _TypeSwitch extends StatelessWidget {
 }
 
 class _AmountDisplay extends StatelessWidget {
-  const _AmountDisplay({required this.text, required this.empty});
+  const _AmountDisplay({required this.text, required this.empty, required this.active});
   final String text;
   final bool empty;
+
+  /// Whether the keypad types into the amount; otherwise the note owns the only caret.
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +455,8 @@ class _AmountDisplay extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 3),
-          _Caret(color: t.accentInk),
+          // Keeps its width when hidden, so the amount does not shift.
+          Visibility.maintain(visible: active, child: _Caret(color: t.accentInk)),
         ],
       ),
     );

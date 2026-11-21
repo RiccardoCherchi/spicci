@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../data/models.dart';
@@ -165,20 +166,55 @@ String txTypeKey(TxType t) => switch (t) {
   TxType.transfer => 'add.transfer',
 };
 
-/// Yes/no dialog with a destructive confirm button.
-Future<bool> confirm(BuildContext context, String title, String body) async =>
-    await showDialog<bool>(
+/// Bottom sheet asking to confirm a destructive action; [action] defaults to Delete.
+Future<bool> confirm(BuildContext context, String title, String body, {String? action}) async =>
+    await showModalBottomSheet<bool>(
       context: context,
-      builder: (c) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: Text('add.cancel'.tr())),
-          TextButton(
-            onPressed: () => Navigator.pop(c, true),
-            child: Text('add.delete'.tr(), style: TextStyle(color: c.tokens.expense)),
+      isScrollControlled: true,
+      builder: (c) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(gap, 0, gap, gap),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+              if (body.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(body, style: TextStyle(color: c.tokens.muted, height: 1.4)),
+              ],
+              const SizedBox(height: 20),
+              FilledButton(
+                style: FilledButton.styleFrom(backgroundColor: c.tokens.expense, foregroundColor: Colors.white),
+                onPressed: () => Navigator.pop(c, true),
+                child: Text(action ?? 'add.delete'.tr()),
+              ),
+              const SizedBox(height: 8),
+              TextButton(onPressed: () => Navigator.pop(c, false), child: Text('add.cancel'.tr())),
+            ],
           ),
-        ],
+        ),
       ),
     ) ??
     false;
+
+/// Line chart touch with a tooltip; [label] gives one row per touched spot, [first] marks the top row.
+LineTouchData lineTouch(BuildContext context, String Function(LineBarSpot spot, bool first) label) {
+  final t = context.tokens;
+  return LineTouchData(
+    touchTooltipData: LineTouchTooltipData(
+      getTooltipColor: (_) => t.card2,
+      tooltipBorderRadius: BorderRadius.circular(10),
+      fitInsideHorizontally: true,
+      fitInsideVertically: true,
+      maxContentWidth: 180,
+      getTooltipItems: (spots) => [
+        for (final (i, s) in spots.indexed)
+          LineTooltipItem(
+            label(s, i == 0),
+            TextStyle(color: t.ink, fontSize: 12, fontWeight: FontWeight.w600, fontFeatures: tabular),
+          ),
+      ],
+    ),
+  );
+}

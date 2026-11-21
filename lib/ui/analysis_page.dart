@@ -273,6 +273,7 @@ class _CategoriesState extends State<_Categories> {
     final total = shares.fold(0, (s, x) => s + x.cents);
     Color colorOf(int? id) => id == null ? t.muted : categoryColor(widget.lookup.categories[id]?.color ?? 0);
     String nameOf(int? id) => widget.lookup.categories[id]?.name ?? 'home.uncategorised'.tr();
+    final picked = shares.where((s) => s.categoryId == _open).firstOrNull;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -294,7 +295,14 @@ class _CategoriesState extends State<_Categories> {
                               sectionsSpace: 2,
                               centerSpaceRadius: 58,
                               startDegreeOffset: -90,
-                              pieTouchData: PieTouchData(enabled: false),
+                              pieTouchData: PieTouchData(
+                                touchCallback: (event, response) {
+                                  final i = response?.touchedSection?.touchedSectionIndex ?? -1;
+                                  if (event is! FlTapUpEvent || i < 0) return;
+                                  final id = shares[i].categoryId;
+                                  setState(() => _open = _open == id ? -1 : id);
+                                },
+                              ),
                               sections: [
                                 for (final s in shares)
                                   PieChartSectionData(
@@ -310,9 +318,14 @@ class _CategoriesState extends State<_Categories> {
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('add.expense'.tr(), style: TextStyle(color: t.muted, fontSize: 12)),
+                              Text(
+                                picked == null ? 'add.expense'.tr() : nameOf(picked.categoryId),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: t.muted, fontSize: 12),
+                              ),
                               MoneyText(
-                                money(total),
+                                money(picked?.cents ?? total),
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: t.ink),
                               ),
                             ],
@@ -447,7 +460,25 @@ class _MonthBars extends StatelessWidget {
         maxY: max(1, top) / 100 * 1.1,
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
-        barTouchData: BarTouchData(enabled: false),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (_) => t.card2,
+            tooltipBorderRadius: BorderRadius.circular(10),
+            fitInsideHorizontally: true,
+            fitInsideVertically: true,
+            maxContentWidth: 180,
+            // One tooltip per month, whichever bar was touched.
+            getTooltipItem: (group, i, rod, rodIndex) {
+              final (m, tot) = series[i];
+              return BarTooltipItem(
+                '${DateFormat.yMMM(lang).format(m)}\n'
+                '${'add.income'.tr()} ${money(tot.incomeCents)}\n'
+                '${'add.expense'.tr()} ${money(tot.expenseCents)}',
+                TextStyle(color: t.ink, fontSize: 12, fontWeight: FontWeight.w600, fontFeatures: tabular),
+              );
+            },
+          ),
+        ),
         titlesData: FlTitlesData(
           leftTitles: const AxisTitles(),
           rightTitles: const AxisTitles(),
@@ -531,7 +562,10 @@ class _NetWorth extends ConsumerWidget {
                 maxY: hi + pad,
                 gridData: const FlGridData(show: false),
                 borderData: FlBorderData(show: false),
-                lineTouchData: const LineTouchData(enabled: false),
+                lineTouchData: lineTouch(
+                  context,
+                  (s, _) => '${DateFormat.yMMM(lang).format(series[s.x.toInt()].$1)}\n${money((s.y * 100).round())}',
+                ),
                 titlesData: FlTitlesData(
                   leftTitles: const AxisTitles(),
                   rightTitles: const AxisTitles(),

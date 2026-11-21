@@ -286,7 +286,16 @@ class _SpendChart extends StatelessWidget {
         titlesData: const FlTitlesData(show: false),
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
-        lineTouchData: const LineTouchData(enabled: false),
+        lineTouchData: lineTouch(context, (s, first) {
+          // Bar 0 is the dashed previous month.
+          final row =
+              '${s.barIndex == 0 ? 'search.period_lastMonth'.tr() : 'add.expense'.tr()} ${money((s.y * 100).round())}';
+          if (!first) return row;
+          final day = DateFormat.MMMd(
+            context.locale.languageCode,
+          ).format(DateTime(month.year, month.month, s.x.toInt()));
+          return '$day\n$row';
+        }),
         clipData: const FlClipData.all(),
         lineBarsData: [
           LineChartBarData(

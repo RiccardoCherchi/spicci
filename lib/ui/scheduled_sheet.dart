@@ -62,7 +62,7 @@ class _ScheduledSheetState extends ConsumerState<ScheduledSheet> {
   }
 
   Future<void> _save(Lookup lookup) async {
-    final n = NumberFormat.decimalPattern(moneyLocale).tryParse(_amount.text.trim());
+    final n = parseAmount(_amount.text.trim());
     if (_name.text.trim().isEmpty || n == null || n <= 0 || _accountId == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('plan.fill_all'.tr())));
       return;

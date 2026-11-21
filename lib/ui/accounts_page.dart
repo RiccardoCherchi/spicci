@@ -145,7 +145,7 @@ class _AccountSheetState extends ConsumerState<_AccountSheet> {
 
   Future<void> _save() async {
     final text = _start.text.trim();
-    final start = text.isEmpty ? 0 : NumberFormat.decimalPattern(moneyLocale).tryParse(text.replaceAll('−', '-'));
+    final start = text.isEmpty ? 0 : parseAmount(text);
     if (_name.text.trim().isEmpty || start == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('accounts.fill_all'.tr())));
       return;

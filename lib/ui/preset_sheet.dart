@@ -42,7 +42,7 @@ class _PresetSheetState extends ConsumerState<PresetSheet> {
   }
 
   int? get _cents {
-    final n = NumberFormat.decimalPattern(moneyLocale).tryParse(_amount.text.trim());
+    final n = parseAmount(_amount.text.trim());
     return n == null ? null : (n * 100).round();
   }
 

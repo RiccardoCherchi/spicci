@@ -42,7 +42,7 @@ class _PaySheetState extends ConsumerState<PaySheet> {
   }
 
   int? get _cents {
-    final n = NumberFormat.decimalPattern(moneyLocale).tryParse(_amount.text.trim());
+    final n = parseAmount(_amount.text.trim());
     return n == null || n <= 0 ? null : (n * 100).round();
   }
 

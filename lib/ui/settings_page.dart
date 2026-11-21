@@ -232,21 +232,7 @@ class SettingsPage extends ConsumerWidget {
       '',
       'settings.replace_warning'.tr(),
     ].join('\n');
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text('settings.replace_title'.tr()),
-        content: Text(body),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(c, false), child: Text('add.cancel'.tr())),
-          TextButton(
-            onPressed: () => Navigator.pop(c, true),
-            child: Text('settings.replace'.tr(), style: TextStyle(color: c.tokens.expense)),
-          ),
-        ],
-      ),
-    );
-    if (ok != true) return;
+    if (!await confirm(context, 'settings.replace_title'.tr(), body, action: 'settings.replace'.tr())) return;
 
     try {
       final db = ref.read(repoProvider).db;

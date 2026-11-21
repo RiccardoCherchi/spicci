@@ -24,6 +24,19 @@ String signedMoney(int cents) => cents > 0 ? '+${money(cents)}' : money(cents);
   return (formatted.substring(0, m.start), m[0]!, formatted.substring(m.end));
 }
 
+/// Parses a typed amount. The keyboard follows the device region, not the app
+/// locale, so both separators are accepted: the last one is the decimal point
+/// when at most two digits follow it, every other one is grouping.
+double? parseAmount(String text) {
+  final s = text.replaceAll(RegExp(r'[\s€]'), '').replaceAll('−', '-');
+  final sep = RegExp('[.,]');
+  final dec = s.lastIndexOf(sep);
+  final normal = dec >= 0 && s.length - dec - 1 <= 2
+      ? '${s.substring(0, dec).replaceAll(sep, '')}.${s.substring(dec + 1)}'
+      : s.replaceAll(sep, '');
+  return double.tryParse(normal);
+}
+
 String decimalSeparator() => NumberFormat.decimalPattern(moneyLocale).symbols.DECIMAL_SEP;
 
 String groupInt(int n) => NumberFormat.decimalPattern(moneyLocale).format(n);
