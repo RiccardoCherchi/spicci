@@ -1,0 +1,60 @@
+// Palettes copied from Sossoldi (MIT) so imported colour indexes keep their colours.
+import 'package:flutter/material.dart';
+
+const categoryPalette = <Color>[
+  Color(0xFFEDC31C),
+  Color(0xFFF68428),
+  Color(0xFFFF4754),
+  Color(0xFFD336B6),
+  Color(0xFF7236D3),
+  Color(0xFF2675E3),
+  Color(0xFF12BFCE),
+  Color(0xFF12BA95),
+  Color(0xFF0BC11D),
+  Color(0xFFF26A52),
+  Color(0xFFF36127),
+  Color(0xFFB64C22),
+  Color(0xFFFC9619),
+  Color(0xFFEBC35F),
+  Color(0xFFD3DD16),
+  Color(0xFFC3EE07),
+  Color(0xFF94E30C),
+  Color(0xFF5BE30C),
+  Color(0xFF109B37),
+  Color(0xFF417388),
+  Color(0xFF32A1A7),
+  Color(0xFF13C9A2),
+  Color(0xFF16DCB1),
+  Color(0xFF11D6E1),
+  Color(0xFF16ADDF),
+  Color(0xFF3284A7),
+  Color(0xFF068DC7),
+  Color(0xFF326AAF),
+  Color(0xFF6B91C0),
+  Color(0xFF3B90F9),
+  Color(0xFF5819E0),
+  Color(0xFF593F92),
+  Color(0xFF8C6AD4),
+  Color(0xFF9827E2),
+  Color(0xFFB655F6),
+  Color(0xFF6E3593),
+  Color(0xFF7212B1),
+  Color(0xFFAF12B1),
+  Color(0xFFE31FE6),
+  Color(0xFFF699E5),
+  Color(0xFFCA0A7D),
+  Color(0xFFEC3972),
+  Color(0xFFD30547),
+  Color(0xFFD41017),
+];
+
+const accountPalette = <Color>[
+  Color(0xFFFFB703),
+  Color(0xFFFB8500),
+  Color(0xFF356CA3),
+  Color(0xFF8ECAE6),
+  Color(0xFF3E9B12),
+];
+
+Color categoryColor(int index) => categoryPalette[index % categoryPalette.length];
+Color accountColor(int index) => accountPalette[index % accountPalette.length];

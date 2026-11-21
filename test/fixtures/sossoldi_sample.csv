@@ -1,0 +1,15 @@
+table_name,id,name,symbol,color,startingValue,active,mainAccount,createdAt,updatedAt,countNetWorth,position,deletedAt,date,amount,type,note,idCategory,idBankAccount,idBankAccountTransfer,recurring,idRecurringTransaction,fromDate,toDate,recurrency,lastInsertion,parent,amountLimit
+bankAccount,1,Fineco,account_balance,2,1500.5,1,0,2024-01-01T10:00:00.000,2024-01-01T10:00:00.000,1,0,,,,,,,,,,,,,,,,
+bankAccount,2,Cash,payments,0,50,1,0,2024-01-01T10:00:00.000,2024-01-01T10:00:00.000,1,1,,,,,,,,,,,,,,,,
+bankAccount,3,Old card,credit_card,9,0,0,0,2024-01-01T10:00:00.000,2024-01-01T10:00:00.000,0,2,2024-06-01T09:00:00.000,,,,,,,,,,,,,,,
+transaction,10,,,,,,,x,x,,,,2025-03-01T14:05:00.000,5.5,OUT,Terea,5,1,,0,,,,,,,
+transaction,11,,,,,,,x,x,,,,2024-02-23,2000,IN,"Stipendio, febbraio",8,1,,0,,,,,,,
+transaction,12,,,,,,,x,x,,,,2024-01-15 10:00:00.000,100,TRSF,,,1,2,0,,,,,,,
+transaction,13,,,,,,,x,x,,,,2024-03-01T00:00:00.000,9.99,OUT,007,6,3,,1,20,,,,,,
+transaction,14,,,,,,,x,x,,,,not a date,1,OUT,,5,1,,0,,,,,,,
+recurringTransaction,20,,,,,,,x,x,,,,,9.99,,Netflix,6,1,,,,2024-01-01T00:00:00.000,,MONTHLY,2024-03-01T00:00:00.000,,
+categoryTransaction,4,Food,restaurant,1,,,,x,x,,0,,,,OUT,,,,,,,,,,,,
+categoryTransaction,5,Tobacco,smoking_rooms,43,,,,x,x,,0,,,,OUT,,,,,,,,,,,4,
+categoryTransaction,6,Subscriptions,subscriptions,99,,,,x,x,,1,2024-05-01T00:00:00.000,,,OUT,,,,,,,,,,,,
+categoryTransaction,8,Salary,work,8,,,,x,x,,2,,,,IN,,,,,,,,,,,,
+budget,1,Food,,,,1,,x,x,,,,,,,,4,,,,,,,,,,300
